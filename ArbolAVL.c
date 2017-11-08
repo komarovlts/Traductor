@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+
 typedef struct AdelsonVelskiiLandis{
    int alturaElemento;
    char palabraEspanhol[24];
@@ -9,57 +14,69 @@ typedef struct AdelsonVelskiiLandis{
    struct AdelsonVelskiiLandis* hijoIzquierdoPalabraIngles;
 }AVL;
 
-int treeLength = 0; //Largo del árbol.
-int counter = 0; //Contador usado en la función recorrerArbol_Inorden - roamTree_Inorden.
+int largoArbol = 0; //Largo del árbol.
+int contador = 0; //Contador usado en la función recorrerArbol_Inorden - roamTree_Inorden.
 
-OBT* createElement(int elementHeight, char spanishWord[], char englishWord[], char definition){
-   AVL* element = (AVL*)malloc(sizeof(AVL));
-   element->elementHeight = elementHeight;
-   strcpy(element->spanishWord, spanishWord);
-   strcpy(element->englishWord, englishWord);
-   strcpy(element->definition, definition);
-   element->rightSonSpanishWord = NULL;
-   element->leftSonSpanishWord = NULL;
-   element->rightSonEnglishWord= NULL;
-   element->leftSonEnglishWord = NULL;
-   return element ;
+AVL* crearElemento(int alturaElemento, char palabraEspanhol[], char palabraIngles[], char definicion[]){
+   AVL* elemento = (AVL*)malloc(sizeof(AVL));
+   elemento->alturaElemento = alturaElemento;
+   strcpy(elemento->palabraEspanhol, palabraEspanhol);
+   strcpy(elemento->palabraIngles, palabraIngles);
+   strcpy(elemento->definicion, definicion);
+   elemento->hijoDerechoPalabraEspanhol = NULL;
+   elemento->hijoIzquierdoPalabraEspanhol = NULL;
+   elemento->hijoDerechoPalabraIngles = NULL;
+   elemento->hijoIzquierdoPalabraIngles = NULL;
+   return elemento;
 }
 
-void addElement(AVL* newElement ,AVL** root){
-	if(*root == NULL){ //En caso de ya estár inicializada con un primer nodo
-		*root = newElement;
-		treeLength = 1;
+/*void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
+	if(*raiz == NULL){ //En caso de ya estár inicializada con un primer nodo
+		*raiz = nuevoElemento;
+		largoArbol = 1;
 		return;
 	}
 	else{
-		OBT* currentElement = *root;
-      OBT* auxElement = *root; //Auxiliar siempre irá en la posición anterior de current.
-      while(currentElement != NULL){ //Avanzará hasta que currentElement apunte a NULL,
-         auxElement = currentElement; //lo que dejará a auxElement en la posición anterior,
-         if(newElement->elementNumber < currentElement->elementNumber){ // que es la posición requerida.
-            currentElement = currentElement->leftSon;
+		AVL* elementoActual = *raiz;
+      AVL* elementoAuxiliar = *raiz; //Auxiliar siempre irá en la posición anterior de current.
+      while(elementoActual != NULL){ //Avanzará hasta que elementoActual apunte a NULL,
+         elementoAuxiliar = elementoActual; //lo que dejará a elementoAuxiliar en la posición anterior,
+         if(nuevoElemento->numeroElemento < elementoActual->numeroElemento){ // que es la posición requerida.
+            elementoActual = elementoActual->hijoIzquierdo;
          }
          else{
-            currentElement = currentElement->rightSon;
+            elementoActual = elementoActual->hijoDerecho;
          }
       }
-      if(newElement->elementNumber < auxElement->elementNumber){
-         auxElement->leftSon = newElement;
-         treeLength++;
+      if(nuevoElemento->numeroElemento < elementoAuxiliar->numeroElemento){
+         elementoAuxiliar->hijoIzquierdo = nuevoElemento;
+         alturaElemento++;
          return;
       }
       else{
-         auxElement->rightSon = newElement;
-         treeLength++;
+         elementoAuxiliar->hijoDerecho = nuevoElemento;
+         alturaElemento++;
          return;
       }
    }
-}
-
-
-
+}*/
 
 int main(int argc, char const *argv[]){
-
+   int i = 0;
+   char PalabraEspanhol[24] = "Chimbarongou";
+   char PalabraIngles[46] = "Chim";
+   while(PalabraEspanhol[i] != '\0' || PalabraIngles[i] != '\0' ) {
+      if(PalabraEspanhol[i] != PalabraIngles[i]){
+         if(PalabraEspanhol[i] < PalabraIngles[i]){
+            printf("El orden alfabético sería: %s , %s\n", PalabraEspanhol, PalabraIngles);
+            break;
+         }
+         else{
+            printf("El orden alfabético sería: %s , %s\n", PalabraIngles, PalabraEspanhol);
+            break;
+         }
+      }
+      i++;
+   }
    return 0;
 }
