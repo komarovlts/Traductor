@@ -42,7 +42,17 @@ Fecha de entrega: 26/11/2017 hasta las 23:30 hrs
 */
 
 //Algoritmos:
-/*EQUILIBRAR(T: árbol): árbol
+//Página 106.
+/*HIJO_IZQUERDO(T: árbol): árbol
+  Si T == NULO:
+    Devolver NULO
+  Devolver T.hijoIzquierdo
+HIJO_DERECHO(T: árbol): árbol
+  Si T == NULO:
+    Devolver NULO
+  Devolver T.hijoDerecho
+//Página 112.
+EQUILIBRAR(T: árbol): árbol
    diferencia = DIFERENCIA_ALTURAS(T)
    Si diferencia == 2:
       Si DIFERENCIA_ALTURAS(HIJO_IZQUERDO(T)) < 0:
@@ -132,6 +142,79 @@ int compararPalabras(char P1[], char P2[]){
       i++;
    }
    return -2; //Error
+}
+
+AVL* hijoDerechoPalabraEspanhol(AVL* elemento){
+  if(elemento == NULL){
+    return NULL;
+  }
+  return elemento->hijoDerechoPalabraEspanhol;
+}
+
+AVL* hijoDerechoPalabraOtro(AVL* elemento){
+  if(elemento == NULL){
+    return NULL;
+  }
+  return elemento->hijoDerechoPalabraOtro;
+
+}
+
+AVL* hijoIzquierdoPalabraEspanhol(AVL* elemento){
+  if(elemento == NULL){
+    return NULL;
+  }
+  return elemento->hijoIzquierdoPalabraEspanhol;
+}
+
+AVL* hijoIzquierdoPalabraOtro(AVL* elemento){
+  if(elemento == NULL){
+    return NULL;
+  }
+  return elemento->hijoDerechoPalabraOtro;
+}
+
+AVL* rotarDerechaEspanhol(AVL* elementoRotar){
+  AVL* nuevaRaiz = hijoIzquierdoPalabraEspanhol(elementoRotar);
+  elementoRotar->hijoIzquierdoPalabraEspanhol = hijoDerechoPalabraEspanhol(nuevaRaiz);
+  nuevaRaiz->hijoDerechoPalabraEspanhol = elementoRotar;
+  return nuevaRaiz;
+}
+
+AVL* rotarIzquierdaEspanhol(AVL* elementoRotar){
+  AVL* nuevaRaiz = hijoDerechoPalabraEspanhol(elementoRotar);
+  elementoRotar->hijoDerechoPalabraEspanhol = hijoIzquierdoPalabraEspanhol(nuevaRaiz);
+  nuevaRaiz->hijoIzquierdoPalabraEspanhol = elementoRotar;
+  return nuevaRaiz;
+}
+
+AVL* rotarDerechaOtro(AVL* elementoRotar){
+  AVL* nuevaRaiz = hijoIzquierdoPalabraOtro(elementoRotar);
+  elementoRotar->hijoIzquierdoPalabraOtro = hijoDerechoPalabraOtro(nuevaRaiz);
+  nuevaRaiz->hijoDerechoPalabraOtro = elementoRotar;
+  return nuevaRaiz;
+}
+
+AVL* rotarIzquierdaOtro(AVL* elementoRotar){
+  AVL* nuevaRaiz = hijoDerechoPalabraOtro(elementoRotar);
+  elementoRotar->hijoDerechoPalabraOtro = hijoIzquierdoPalabraOtro(nuevaRaiz);
+  nuevaRaiz->hijoIzquierdoPalabraOtro = elementoRotar;
+  return nuevaRaiz;
+}
+
+int alturaElementoEspanhol(AVL* elemento){
+  int alturaDerecha, alturaIzquierda;
+  if(elemento == NULL){
+    return -1;
+  }
+  if(hijoDerechoPalabraEspanhol(elemento) == NULL && hijoIzquierdoPalabraEspanhol(elemento) == NULL){
+    return 0;
+  }
+  alturaDerecha = alturaElementoEspanhol(hijoDerechoPalabraEspanhol(elemento));
+  alturaIzquierda = alturaElementoEspanhol(hijoIzquierdoPalabraEspanhol(elemento));
+  if(alturaIzquierda > alturaDerecha){
+    return 1 + alturaIzquierda;
+  }
+  return 1 + alturaDerecha;
 }
 
 void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
