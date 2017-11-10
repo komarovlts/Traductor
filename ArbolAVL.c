@@ -91,7 +91,6 @@ ROTAR_IZQUIERDA(T: árbol): árbol
    Devolver raíz
 */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -101,8 +100,8 @@ typedef struct AdelsonVelskiiLandis{
    int alturaElemento;
    char palabraEspanhol[51];
    char palabraOtro[51];
-   struct AdelsonVelskiiLandis* hijoDerechoPalabraEspanhol;
    char definicion[501];
+   struct AdelsonVelskiiLandis* hijoDerechoPalabraEspanhol;
    struct AdelsonVelskiiLandis* hijoIzquierdoPalabraEspanhol;
    struct AdelsonVelskiiLandis* hijoDerechoPalabraOtro;
    struct AdelsonVelskiiLandis* hijoIzquierdoPalabraOtro;
@@ -173,38 +172,39 @@ AVL* hijoIzquierdoPalabraOtro(AVL* elemento){
   return elemento->hijoDerechoPalabraOtro;
 }
 
-AVL* rotarDerechaEspanhol(AVL* elementoRotar){
+void rotarDerechaEspanhol(AVL* elementoRotar){
   AVL* nuevaRaiz = hijoIzquierdoPalabraEspanhol(elementoRotar);
   elementoRotar->hijoIzquierdoPalabraEspanhol = hijoDerechoPalabraEspanhol(nuevaRaiz);
   nuevaRaiz->hijoDerechoPalabraEspanhol = elementoRotar;
-  return nuevaRaiz;
+  return;
 }
 
-AVL* rotarIzquierdaEspanhol(AVL* elementoRotar){
+void rotarIzquierdaEspanhol(AVL* elementoRotar){
   AVL* nuevaRaiz = hijoDerechoPalabraEspanhol(elementoRotar);
   elementoRotar->hijoDerechoPalabraEspanhol = hijoIzquierdoPalabraEspanhol(nuevaRaiz);
   nuevaRaiz->hijoIzquierdoPalabraEspanhol = elementoRotar;
-  return nuevaRaiz;
+  return;
 }
 
-AVL* rotarDerechaOtro(AVL* elementoRotar){
+void rotarDerechaOtro(AVL* elementoRotar){
   AVL* nuevaRaiz = hijoIzquierdoPalabraOtro(elementoRotar);
   elementoRotar->hijoIzquierdoPalabraOtro = hijoDerechoPalabraOtro(nuevaRaiz);
   nuevaRaiz->hijoDerechoPalabraOtro = elementoRotar;
-  return nuevaRaiz;
+  return;
 }
 
-AVL* rotarIzquierdaOtro(AVL* elementoRotar){
+void rotarIzquierdaOtro(AVL* elementoRotar){
   AVL* nuevaRaiz = hijoDerechoPalabraOtro(elementoRotar);
   elementoRotar->hijoDerechoPalabraOtro = hijoIzquierdoPalabraOtro(nuevaRaiz);
   nuevaRaiz->hijoIzquierdoPalabraOtro = elementoRotar;
-  return nuevaRaiz;
+  return;
 }
+
 
 int alturaElementoEspanhol(AVL* elemento){
   int alturaDerecha, alturaIzquierda;
   if(elemento == NULL){
-    return -1;
+    return 0;
   }
   if(hijoDerechoPalabraEspanhol(elemento) == NULL && hijoIzquierdoPalabraEspanhol(elemento) == NULL){
     return 0;
@@ -215,6 +215,70 @@ int alturaElementoEspanhol(AVL* elemento){
     return 1 + alturaIzquierda;
   }
   return 1 + alturaDerecha;
+}
+
+int alturaElementoOtro(AVL* elemento){
+  int alturaDerecha, alturaIzquierda;
+  if(elemento == NULL){
+    return 0;
+  }
+  if(hijoDerechoPalabraOtro(elemento) == NULL && hijoIzquierdoPalabraOtro(elemento) == NULL){
+    return 0;
+  }
+  alturaDerecha = alturaElementoOtro(hijoDerechoPalabraOtro(elemento));
+  alturaIzquierda = alturaElementoOtro(hijoIzquierdoPalabraOtro(elemento));
+  if(alturaIzquierda > alturaDerecha){
+    return 1 + alturaIzquierda;
+  }
+  return 1 + alturaDerecha;
+}
+
+int diferenciaAlturasEspanhol(AVL* elemento){
+   return (alturaElementoEspanhol(elemento->hijoIzquierdoPalabraEspanhol) - alturaElementoEspanhol(elemento->hijoDerechoPalabraEspanhol));
+}
+
+int diferenciaAlturasOtro(AVL* elemento){
+   return (alturaElementoOtro(hijoIzquierdoPalabraEspanhol(elemento)) - alturaElementoOtro(hijoDerechoPalabraEspanhol(elemento)));
+}
+
+void equilibrarRamaEspanhol(AVL* elementoEquilibrar){
+   int diferencia;
+   diferencia = diferenciaAlturasEspanhol(elementoEquilibrar);
+   if(diferencia == 2){
+      if(diferenciaAlturasEspanhol(hijoIzquierdoPalabraEspanhol(elementoEquilibrar)) < 0){
+         rotarIzquierdaEspanhol(hijoIzquierdoPalabraEspanhol(elementoEquilibrar));
+      }
+      rotarDerechaEspanhol(elementoEquilibrar);
+      return;
+   }
+   if(diferencia == -2){
+      if(diferenciaAlturasEspanhol(hijoDerechoPalabraEspanhol(elementoEquilibrar)) > 0){
+         rotarDerechaEspanhol(hijoDerechoPalabraEspanhol(elementoEquilibrar));
+      }
+      rotarIzquierdaEspanhol(elementoEquilibrar);
+      return;
+   }
+   return;
+}
+
+void equilibrarRamaOtro(AVL* elementoEquilibrar){
+   int diferencia;
+   diferencia = diferenciaAlturasOtro(elementoEquilibrar);
+   if(diferencia == 2){
+      if(diferenciaAlturasOtro(hijoIzquierdoPalabraOtro(elementoEquilibrar)) < 0){
+         rotarIzquierdaOtro(hijoIzquierdoPalabraOtro(elementoEquilibrar));
+      }
+      rotarDerechaOtro(elementoEquilibrar);
+      return;
+   }
+   if(diferencia == -2){
+      if(diferenciaAlturasOtro(hijoDerechoPalabraOtro(elementoEquilibrar)) > 0){
+         rotarDerechaOtro(hijoDerechoPalabraOtro(elementoEquilibrar));
+      }
+      rotarIzquierdaOtro(elementoEquilibrar);
+      return;
+   }
+   return;
 }
 
 void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
@@ -228,7 +292,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
 		AVL* elementoActualEspanhol = *raiz;
       AVL* elementoAuxiliarEspanhol = *raiz; //Auxiliar siempre irá en la posición anterior de actual.
       while(elementoActualEspanhol != NULL){ //Avanzará hasta que elementoActual apunte a NULL,
-         elementoAuxiliarEspanhol = elementoActualEspanhol; //lo que dejará a elementoAuxiliar en la posición anterior,
+         elementoAuxiliarEspanhol = elementoActualEspanhol; //lo que dejará a elementoAuxiliar en la posición anterior.
          if(compararPalabras(nuevoElemento->palabraEspanhol, elementoActualEspanhol->palabraEspanhol) == 1){
             elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
          }
@@ -241,6 +305,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
       }
       if(compararPalabras(nuevoElemento->palabraEspanhol, elementoAuxiliarEspanhol->palabraEspanhol) == 1){
          elementoAuxiliarEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
+         //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
          largoArbol++;
       }
       if(compararPalabras(nuevoElemento->palabraEspanhol, elementoAuxiliarEspanhol->palabraEspanhol) == -2) {
@@ -248,6 +313,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
       }
       else{
          elementoAuxiliarEspanhol->hijoDerechoPalabraEspanhol = nuevoElemento;
+         //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
          largoArbol++;
       }
       //Para el otro idioma.
@@ -259,7 +325,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
             elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
          }
          if(compararPalabras(nuevoElemento->palabraOtro, elementoActualOtro->palabraOtro) == -2) {
-            printf("Error al comparar palabras\n");
+            printf("Error al comparar palabras, al buscar\n");
          }
          else{
             elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
@@ -267,6 +333,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
       }
       if(compararPalabras(nuevoElemento->palabraOtro, elementoAuxiliarOtro->palabraOtro) == 1){
          elementoAuxiliarOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
+         //equilibrarRamaOtro(elementoAuxiliarOtro);
          largoArbol++;
       }
       if(compararPalabras(nuevoElemento->palabraOtro, elementoAuxiliarOtro->palabraOtro) == -2) {
@@ -274,19 +341,53 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
       }
       else{
          elementoAuxiliarOtro->hijoDerechoPalabraOtro = nuevoElemento;
+         //equilibrarRamaOtro(elementoAuxiliarOtro);;
          largoArbol++;
+      }
+   }
+   return;
+}
+
+void mostrarArbol_InordenEspanhol(AVL** raiz){
+   if(*raiz != NULL){
+      if((*raiz)->hijoIzquierdoPalabraEspanhol != NULL){
+         mostrarArbol_InordenEspanhol(&((*raiz)->hijoIzquierdoPalabraOtro));
+      }
+      printf("[ %s ]",(*raiz)->palabraEspanhol);
+      if((*raiz)->hijoDerechoPalabraEspanhol != NULL){
+         mostrarArbol_InordenEspanhol(&((*raiz)->hijoDerechoPalabraEspanhol ));
       }
    }
 }
 
-
-
+void mostrarArbol_InordenOtro(AVL** raiz){
+   if(*raiz != NULL){
+      if((*raiz)->hijoIzquierdoPalabraOtro != NULL){
+         mostrarArbol_InordenOtro(&((*raiz)->hijoIzquierdoPalabraOtro));
+      }
+      printf("[ %s ]",(*raiz)->palabraOtro);
+      if((*raiz)->hijoDerechoPalabraOtro != NULL){
+         mostrarArbol_InordenOtro(&((*raiz)->hijoDerechoPalabraOtro));
+      }
+   }
+}
 
 int main(int argc, char const *argv[]){
    AVL* raiz = NULL;
-   AVL* primerElemento = crearElemento("Azul","Blue","Es un color");
-   AVL* segundoElemento = crearElemento("Rojo","Red","Es otro color");
+   AVL* primerElemento = crearElemento("Azul","Blue","Es el color ingresado número 1");
+   AVL* segundoElemento = crearElemento("Rojo","Red","Es el color ingresado número 2");
+   AVL* tercerElemento = crearElemento("Cafe","Brown","Es el color ingresado número 3");
+   AVL* cuartoElemento = crearElemento("Amarillo","Yellow","Es el color ingresado número 4");
+   AVL* quintoElemento = crearElemento("Rosado","Pink","Es el color ingresado número 5");
    agregarElemento(primerElemento, &raiz);
    agregarElemento(segundoElemento, &raiz);
+   agregarElemento(tercerElemento, &raiz);
+   //agregarElemento(cuartoElemento, &raiz);
+   //agregarElemento(quintoElemento, &raiz);
+   printf("\nLas palabras en Español en inorden son: ");
+   mostrarArbol_InordenEspanhol(&raiz);
+   printf("\nLas palabras en Otro en inorden son: ");
+   mostrarArbol_InordenOtro(&raiz);
+   printf("\n\n");
    return 0;
 }
