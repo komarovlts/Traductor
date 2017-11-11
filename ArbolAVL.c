@@ -278,75 +278,85 @@ void equilibrarRamaOtro(AVL* elementoEquilibrar){
    return;
 }
 
-void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
-  int comparacionEspanhol, comparacionOtro;
-	if(*raiz == NULL){ //En caso de ya estár inicializada con un primer nodo
-		*raiz = nuevoElemento;
-		largoArbol = 1;
-		return;
-	}
-	else{
-      //Para español.
-		AVL* elementoActualEspanhol = *raiz;
-    AVL* elementoAuxiliarEspanhol = *raiz; //Auxiliar siempre irá en la posición anterior de actual.
-      while(elementoActualEspanhol != NULL){ //Avanzará hasta que elementoActual apunte a NULL.
+void agregarElementoEspanhol(AVL* nuevoElemento ,AVL** raiz) {
+   int comparacionEspanhol;
+   AVL* elementoActualEspanhol = *raiz;
+   AVL* elementoAuxiliarEspanhol = *raiz; //Auxiliar siempre irá en la posición anterior de actual.
+   while(elementoActualEspanhol != NULL){ //Avanzará hasta que elementoActual apunte a NULL.
+      if(elementoActualEspanhol != NULL){
          comparacionEspanhol = compararPalabras(nuevoElemento->palabraEspanhol, elementoActualEspanhol->palabraEspanhol);
          elementoAuxiliarEspanhol = elementoActualEspanhol; //lo que dejará a elementoAuxiliar en la posición anterior.
-         if(comparacionEspanhol == 1){
-            elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
-         }
          if(comparacionEspanhol == -2) {
             printf("Error al comparar palabras, al buscar\n");
          }
+         if(comparacionEspanhol == 1 && elementoActualEspanhol != NULL){
+            elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
+         }
          else{
+            if(elementoActualEspanhol != NULL){
             elementoActualEspanhol = elementoActualEspanhol->hijoDerechoPalabraEspanhol;
+            }
          }
       }
-      if(comparacionEspanhol == 1){
-         elementoAuxiliarEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
-         //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
-         largoArbol++;
-      }
-      if(comparacionEspanhol == -2) {
-         printf("Error al comparar palabras, al insertar\n");
-      }
-      else{
-         elementoAuxiliarEspanhol->hijoDerechoPalabraEspanhol = nuevoElemento;
-         //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
-         largoArbol++;
-      }
-      //Para el otro idioma.
-      AVL* elementoActualOtro = *raiz;
-      AVL* elementoAuxiliarOtro = *raiz; //Auxiliar siempre irá en la posición anterior de actual.
-      while(elementoActualOtro != NULL){ //Avanzará hasta que elementoActual apunte a NULL,
-         comparacionOtro = compararPalabras(nuevoElemento->palabraOtro, elementoActualOtro->palabraOtro);
-         elementoAuxiliarOtro = elementoActualOtro; //lo que dejará a elementoAuxiliar en la posición anterior,
-         if(comparacionOtro == 1){
-            elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
-         }
-         if(comparacionOtro == -2) {
-            printf("Error al comparar palabras, al buscar\n");
-         }
-         else{
-            elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
-         }
-      }
-      if(comparacionOtro == 1){
-         elementoAuxiliarOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
-         //equilibrarRamaOtro(elementoAuxiliarOtro);
-         largoArbol++;
-      }
-      if(comparacionOtro == -2) {
-         printf("Error al comparar palabras, al insertar\n");
-      }
-      else{
-         elementoAuxiliarOtro->hijoDerechoPalabraOtro = nuevoElemento;
-         //equilibrarRamaOtro(elementoAuxiliarOtro);;
-         largoArbol++;
-      }
+   }
+   if(comparacionEspanhol == 1){
+      elementoAuxiliarEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
+      //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
+      largoArbol++;
+   }
+   if(comparacionEspanhol == -2) {
+      printf("Error al comparar palabras, al insertar\n");
+   }
+   else{
+      elementoAuxiliarEspanhol->hijoDerechoPalabraEspanhol = nuevoElemento;
+      //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
+      largoArbol++;
    }
    return;
 }
+
+void agregarElementoOtro(AVL* nuevoElemento ,AVL** raiz){
+   int comparacionOtro;
+   AVL* elementoActualOtro = *raiz;
+   AVL* elementoAuxiliarOtro = *raiz; //Auxiliar siempre irá en la posición anterior de actual.
+   while(elementoActualOtro != NULL){ //Avanzará hasta que elementoActual apunte a NULL,
+      comparacionOtro = compararPalabras(nuevoElemento->palabraOtro, elementoActualOtro->palabraOtro);
+      elementoAuxiliarOtro = elementoActualOtro; //lo que dejará a elementoAuxiliar en la posición anterior,
+      if(comparacionOtro == -2) {
+         printf("Error al comparar palabras, al buscar\n");
+      }
+      if(comparacionOtro == 1){
+         elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
+      }
+      else{
+         elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
+      }
+   }
+   if(comparacionOtro == 1){
+      elementoAuxiliarOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
+      //equilibrarRamaOtro(elementoAuxiliarOtro);
+      largoArbol++;
+   }
+   if(comparacionOtro == -2) {
+      printf("Error al comparar palabras, al insertar\n");
+   }
+   else{
+      elementoAuxiliarOtro->hijoDerechoPalabraOtro = nuevoElemento;
+      //equilibrarRamaOtro(elementoAuxiliarOtro);;
+      largoArbol++;
+   }
+}
+void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
+   if(*raiz == NULL){ //En caso de ya estár inicializada con un primer nodo
+ 		*raiz = nuevoElemento;
+ 		largoArbol = 1;
+ 		return;
+ 	}
+   agregarElementoEspanhol(nuevoElemento, raiz);
+   agregarElementoOtro(nuevoElemento, raiz);
+   return;
+}
+
 
 void mostrarArbol_InordenEspanhol(AVL** raiz){
    if(*raiz != NULL){
@@ -372,22 +382,28 @@ void mostrarArbol_InordenOtro(AVL** raiz){
    }
 }
 
+void mostrarArbol_Inorden(AVL** raiz) {
+   printf("\nLas palabras en Español en inorden son: ");
+   mostrarArbol_InordenEspanhol(raiz);
+   printf("\nLas palabras en Otro en inorden son: ");
+   mostrarArbol_InordenOtro(raiz);
+   printf("\n\n");
+   return;
+}
+
 int main(int argc, char const *argv[]){
    AVL* raiz = NULL;
    AVL* primerElemento = crearElemento("Azul","Blue","Es el color ingresado número 1");
    AVL* segundoElemento = crearElemento("Rojo","Red","Es el color ingresado número 2");
-   //AVL* tercerElemento = crearElemento("Cafe","Brown","Es el color ingresado número 3");
+   AVL* tercerElemento = crearElemento("Cafe","Brown","Es el color ingresado número 3");
    AVL* cuartoElemento = crearElemento("Amarillo","Yellow","Es el color ingresado número 4");
    AVL* quintoElemento = crearElemento("Rosado","Pink","Es el color ingresado número 5");
    agregarElemento(primerElemento, &raiz);
    agregarElemento(segundoElemento, &raiz);
-   //agregarElemento(tercerElemento, &raiz);
+   agregarElemento(tercerElemento, &raiz);
    agregarElemento(cuartoElemento, &raiz);
-   //agregarElemento(quintoElemento, &raiz);
-   printf("\nLas palabras en Español en inorden son: ");
-   mostrarArbol_InordenEspanhol(&raiz);
-   printf("\nLas palabras en Otro en inorden son: ");
-   mostrarArbol_InordenOtro(&raiz);
-   printf("\n\n");
+   agregarElemento(quintoElemento, &raiz);
+   mostrarArbol_Inorden(&raiz);
+
    return 0;
 }

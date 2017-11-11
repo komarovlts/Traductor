@@ -2,10 +2,10 @@
 # version lab 3 xD
 
 # archivos de entrada y salida
-executable = a.out
-debuggable = d.out
+executable = Prueba.o
+debuggable = debug.out
 #headers    =        lista.h grafo.h constantes.h
-headers    = 
+headers    =
 #source     = main.c lista.c grafo.c
 source     = ArbolAVL.c
 objects    = $(source:.c=.o)
