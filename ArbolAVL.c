@@ -289,23 +289,21 @@ void agregarElementoEspanhol(AVL* nuevoElemento ,AVL** raiz) {
          if(comparacionEspanhol == -2) {
             printf("Error al comparar palabras, al buscar\n");
          }
-         if(comparacionEspanhol == 1 && elementoActualEspanhol != NULL){
+         if(comparacionEspanhol == 1){
             elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
          }
          else{
-            if(elementoActualEspanhol != NULL){
             elementoActualEspanhol = elementoActualEspanhol->hijoDerechoPalabraEspanhol;
-            }
          }
       }
+   }
+   if(comparacionEspanhol == -2) {
+      printf("Error al comparar palabras, al insertar\n");
    }
    if(comparacionEspanhol == 1){
       elementoAuxiliarEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
       //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
       largoArbol++;
-   }
-   if(comparacionEspanhol == -2) {
-      printf("Error al comparar palabras, al insertar\n");
    }
    else{
       elementoAuxiliarEspanhol->hijoDerechoPalabraEspanhol = nuevoElemento;
@@ -332,13 +330,13 @@ void agregarElementoOtro(AVL* nuevoElemento ,AVL** raiz){
          elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
       }
    }
+   if(comparacionOtro == -2) {
+      printf("Error al comparar palabras, al insertar\n");
+   }
    if(comparacionOtro == 1){
       elementoAuxiliarOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
       //equilibrarRamaOtro(elementoAuxiliarOtro);
       largoArbol++;
-   }
-   if(comparacionOtro == -2) {
-      printf("Error al comparar palabras, al insertar\n");
    }
    else{
       elementoAuxiliarOtro->hijoDerechoPalabraOtro = nuevoElemento;
@@ -361,7 +359,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
 void mostrarArbol_InordenEspanhol(AVL** raiz){
    if(*raiz != NULL){
       if((*raiz)->hijoIzquierdoPalabraEspanhol != NULL){
-         mostrarArbol_InordenEspanhol(&((*raiz)->hijoIzquierdoPalabraOtro));
+         mostrarArbol_InordenEspanhol(&((*raiz)->hijoIzquierdoPalabraEspanhol));
       }
       printf("[ %s ]",(*raiz)->palabraEspanhol);
       if((*raiz)->hijoDerechoPalabraEspanhol != NULL){
