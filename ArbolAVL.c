@@ -302,12 +302,12 @@ void agregarElementoEspanhol(AVL* nuevoElemento ,AVL** raiz) {
    }
    if(comparacionEspanhol == 1){
       elementoAuxiliarEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
-      //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
+      equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
       largoArbol++;
    }
    else{
       elementoAuxiliarEspanhol->hijoDerechoPalabraEspanhol = nuevoElemento;
-      //equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
+      equilibrarRamaEspanhol(elementoAuxiliarEspanhol);
       largoArbol++;
    }
    return;
@@ -335,12 +335,12 @@ void agregarElementoOtro(AVL* nuevoElemento ,AVL** raiz){
    }
    if(comparacionOtro == 1){
       elementoAuxiliarOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
-      //equilibrarRamaOtro(elementoAuxiliarOtro);
+      equilibrarRamaOtro(elementoAuxiliarOtro);
       largoArbol++;
    }
    else{
       elementoAuxiliarOtro->hijoDerechoPalabraOtro = nuevoElemento;
-      //equilibrarRamaOtro(elementoAuxiliarOtro);;
+      equilibrarRamaOtro(elementoAuxiliarOtro);;
       largoArbol++;
    }
 }
