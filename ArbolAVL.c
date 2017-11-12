@@ -489,7 +489,7 @@ AVL* buscarElemento(char palabraObjetivo[], AVL** raiz){ //Busca el primer eleme
       //Buscar en palabras en español.
       AVL* elementoActualEspanhol = *raiz;
       while(comparacionCompleta(elementoActualEspanhol->palabraEspanhol, palabraObjetivo) != 0 && elementoActualEspanhol != NULL){
-         if(compararPalabras(elementoActualEspanhol->palabraEspanhol, palabraObjetivo) == 1){
+         if(compararPalabras(palabraObjetivo, elementoActualEspanhol->palabraEspanhol) == 1){
             elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
          }
          else{
@@ -500,7 +500,7 @@ AVL* buscarElemento(char palabraObjetivo[], AVL** raiz){ //Busca el primer eleme
          //Buscar en palabras en español.
          AVL* elementoActualOtro = *raiz;
          while(comparacionCompleta(elementoActualOtro->palabraEspanhol, palabraObjetivo) != 0 && elementoActualOtro != NULL){
-            if(compararPalabras(elementoActualOtro->palabraEspanhol, palabraObjetivo) == 1){
+            if(compararPalabras(palabraObjetivo, elementoActualOtro->palabraEspanhol) == 1){
                elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
             }
             else{
@@ -541,7 +541,7 @@ int main(int argc, char const *argv[]){
    mostrarArbol_Inorden(&raiz);
    mostrarArbol_Postorden(&raiz);
 
-   char elemento[51] = "Rojo";
+   char elemento[51] = "Azul";
    AVL* elementoBuscado = buscarElemento(elemento, &raiz);
    printf("Palabra a buscar: %s\n", elemento);
    printf("Este es el elemento buscado: %s , %s\n", elementoBuscado->palabraEspanhol, elementoBuscado->palabraOtro);
