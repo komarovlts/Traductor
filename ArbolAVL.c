@@ -31,64 +31,14 @@ resultado el árbol desde la perspectiva del español. (Imagenes de Ejemplo en e
 
 Para  este  laboratoio  se  requiere  que  implemente  un  programa  que  reciba  un  archivo  de  texto  llamado
 “Diccionario.in” y que genere un árbol AVL a partir de este. El programa debe permitir:
-Consultar por una palabrajunto su idioma y entregar su traducción.
+Consultar por una palabra junto su idioma y entregar su traducción.
 Consultar por el significado de una palabra.
-Entregar la información de todo el árbol en orden alfabéticoen español o inglés
+Entregar la información de todo el árbol en orden alfabético en español o inglés
 (según indique el usuario) en una archivo llamado “Palabras.out”. Entregando la siguiente información por cada nodo:
 Palabra_en_español Palabra_en_Otro (Hijo_izquierdo_en_español, Hijo_derecho_en_español) –
 (Hijo_izquierdo_en_Otro, Hijo_derecho_en_inglés)
 
 Fecha de entrega: 26/11/2017 hasta las 23:30 hrs
-*/
-
-//Algoritmos:
-//Página 106.
-/*HIJO_IZQUERDO(T: árbol): árbol
-  Si T == NULO:
-    Devolver NULO
-  Devolver T.hijoIzquierdo
-HIJO_DERECHO(T: árbol): árbol
-  Si T == NULO:
-    Devolver NULO
-  Devolver T.hijoDerecho
-//Página 112.
-EQUILIBRAR(T: árbol): árbol
-   diferencia = DIFERENCIA_ALTURAS(T)
-   Si diferencia == 2:
-      Si DIFERENCIA_ALTURAS(HIJO_IZQUERDO(T)) < 0:
-         T.hijoIzquierdo = ROTAR_IZQUIERDA(HIJO_IZQUERDO(T))
-      Devolver ROTAR_DERECHA(T)
-   Si diferencia == -2:
-      Si DIFERENCIA_ALTURAS(HIJO_DERECHO(T)) > 0:
-         T.hijoDerecho = ROTAR_DERECHA(HIJO_DERECHO(T))
-      Devolver ROTAR_IZQUIERDA(T)
-   Devolver T
-
-DIFERENCIA_ALTURAS(T: árbol): entero
-   Devolver ALTURA(HIJO_IZQUERDO(T)) - ALTURA(HIJO_DERECHO(T))
-
-ALTURA(T: árbol): entero
-   Si T == NULO:
-      Devolver NULO
-   Si HIJO_IZQUERDO(T) == NULO && HIJO_DERECHO(T) == NULO:
-      Devolver 0
-   alturaIzquierda = ALTURA(HIJO_IZQUERDO(T))
-   alturaDerecha = ALTURA(HIJO_DERECHO(T))
-
-   Si alturaIzquierda > alturaDerecha:
-      Devolver 1 + alturaIzquierda
-   Devolver 1 + alturaDerecha
-
-ROTAR_DERECHA(T: árbol): árbol
-   raíz = HIJO_IZQUERDO(T)
-   T.hijoIzquierdo = HIJO_DERECHO(raíz)
-   raíz.hijoDerecho = T
-   Devolver raíz
-ROTAR_IZQUIERDA(T: árbol): árbol
-   raíz = HIJO_DERECHO(T)
-   T.hijoDerecho = HIJO_IZQUERDO(raíz)
-   raíz.hijoIzquierdo = T
-   Devolver raíz
 */
 
 #include <stdio.h>
@@ -206,33 +156,33 @@ void rotarIzquierdaOtro(AVL* elementoRotar){
 int alturaElementoEspanhol(AVL* elemento){
   int alturaDerecha, alturaIzquierda;
   if(elemento == NULL){
-    return 1;
+    return 0;
   }
   if(hijoDerechoPalabraEspanhol(elemento) == NULL && hijoIzquierdoPalabraEspanhol(elemento) == NULL){
-    return 1;
+    return 0;
   }
   alturaDerecha = alturaElementoEspanhol(hijoDerechoPalabraEspanhol(elemento));
   alturaIzquierda = alturaElementoEspanhol(hijoIzquierdoPalabraEspanhol(elemento));
   if(alturaIzquierda > alturaDerecha){
-    return (2 + alturaIzquierda);
+    return 1 + alturaIzquierda;
   }
-  return (2 + alturaDerecha);
+  return 1 + alturaDerecha;
 }
 
 int alturaElementoOtro(AVL* elemento){
   int alturaDerecha, alturaIzquierda;
   if(elemento == NULL){
-    return 1;
+    return 0;
   }
   if(hijoDerechoPalabraOtro(elemento) == NULL && hijoIzquierdoPalabraOtro(elemento) == NULL){
-    return 1;
+    return 0;
   }
   alturaDerecha = alturaElementoOtro(hijoDerechoPalabraOtro(elemento));
   alturaIzquierda = alturaElementoOtro(hijoIzquierdoPalabraOtro(elemento));
   if(alturaIzquierda > alturaDerecha){
-    return 2 + alturaIzquierda;
+    return 1 + alturaIzquierda;
   }
-  return 2 + alturaDerecha;
+  return 1 + alturaDerecha;
 }
 
 int diferenciaAlturasEspanhol(AVL* elemento){
@@ -291,9 +241,9 @@ void agregarElementoEspanhol(AVL* nuevoElemento ,AVL** raiz) {
       if(elementoActualEspanhol != NULL){
          comparacionEspanhol = compararPalabras(nuevoElemento->palabraEspanhol, elementoActualEspanhol->palabraEspanhol);
          elementoAnteriorEspanhol = elementoActualEspanhol; //lo que dejará a elementoAuxiliar en la posición anterior.
-         if(comparacionEspanhol == -2) {
+         /*if(comparacionEspanhol == -2) {
             printf("Error al comparar palabras, al buscar\n");
-         }
+         }*/
          if(comparacionEspanhol == 1){
             elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
          }
@@ -302,9 +252,9 @@ void agregarElementoEspanhol(AVL* nuevoElemento ,AVL** raiz) {
          }
       }
    }
-   if(comparacionEspanhol == -2) {
+   /*if(comparacionEspanhol == -2) {
       printf("Error al comparar palabras, al insertar\n");
-   }
+   }*/
    if(comparacionEspanhol == 1){
       elementoAnteriorEspanhol->hijoIzquierdoPalabraEspanhol = nuevoElemento;
       //equilibrarRamaEspanhol(*raiz);
@@ -325,9 +275,9 @@ void agregarElementoOtro(AVL* nuevoElemento ,AVL** raiz){
    while(elementoActualOtro != NULL){ //Avanzará hasta que elementoActual apunte a NULL,
       comparacionOtro = compararPalabras(nuevoElemento->palabraOtro, elementoActualOtro->palabraOtro);
       elementoAnteriorOtro = elementoActualOtro; //lo que dejará a elementoAuxiliar en la posición anterior,
-      if(comparacionOtro == -2) {
+      /*if(comparacionOtro == -2) {
          printf("Error al comparar palabras, al buscar\n");
-      }
+      }*/
       if(comparacionOtro == 1){
          elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
       }
@@ -335,9 +285,9 @@ void agregarElementoOtro(AVL* nuevoElemento ,AVL** raiz){
          elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
       }
    }
-   if(comparacionOtro == -2) {
+   /*if(comparacionOtro == -2) {
       printf("Error al comparar palabras, al insertar\n");
-   }
+   }*/
    if(comparacionOtro == 1){
       elementoAnteriorOtro->hijoIzquierdoPalabraOtro = nuevoElemento;
       //equilibrarRamaOtro(*raiz);
@@ -358,7 +308,7 @@ void agregarElemento(AVL* nuevoElemento ,AVL** raiz){
    agregarElementoEspanhol(nuevoElemento, raiz);
    agregarElementoOtro(nuevoElemento, raiz);
    equilibrarRamaEspanhol(*raiz);
-   //equilibrarRamaOtro(*raiz);
+   equilibrarRamaOtro(*raiz);
    return;
 }
 
@@ -497,10 +447,10 @@ AVL* buscarElemento(char palabraObjetivo[], AVL** raiz){ //Busca el primer eleme
          }
       }
       if(elementoActualEspanhol == NULL){
-         //Buscar en palabras en español.
+         //Buscar en palabras en inglés. Si se ha rotado es posible que no funcione.
          AVL* elementoActualOtro = *raiz;
-         while(comparacionCompleta(elementoActualOtro->palabraEspanhol, palabraObjetivo) != 0 && elementoActualOtro != NULL){
-            if(compararPalabras(palabraObjetivo, elementoActualOtro->palabraEspanhol) == 1){
+         while(comparacionCompleta(elementoActualOtro->palabraOtro, palabraObjetivo) != 0 && elementoActualOtro != NULL){
+            if(compararPalabras(palabraObjetivo, elementoActualOtro->palabraOtro) == 1){
                elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
             }
             else{
@@ -521,7 +471,31 @@ AVL* buscarElemento(char palabraObjetivo[], AVL** raiz){ //Busca el primer eleme
 }
 
 int main(int argc, char const *argv[]){
-   AVL* primerElemento = crearElemento("Azul","Blue","Es el color ingresado número 1", "It is the color added number 1");
+   int i,j;
+   char palabraEspanhol[51], palabraOtro[51], definicionEspanhol[501], definicionOtro[501];
+   FILE *archivoObjetivo = NULL;
+   archivoObjetivo = fopen("Diccionario.in","r");
+   while(!feof(archivoObjetivo)){
+         fscanf(archivoObjetivo,"%s%s",palabraEspanhol, palabraOtro);
+         fscanf(archivoObjetivo," %[^\n]", definicionEspanhol);
+         fscanf(archivoObjetivo," %[^\n]", definicionOtro);
+         if(!feof(archivoObjetivo)){
+            AVL* elemento = crearElemento(palabraEspanhol, palabraOtro, definicionEspanhol, definicionOtro);
+            agregarElemento(elemento, &raiz);
+         }
+      }
+   fclose(archivoObjetivo);
+   mostrarArbol_Preorden(&raiz);
+   mostrarArbol_Inorden(&raiz);
+   mostrarArbol_Postorden(&raiz);
+
+   char elementoBuscar[51] = "Cafe";
+   AVL* elementoBuscado = buscarElemento(elementoBuscar, &raiz);
+   printf("Palabra a buscar: %s\n", elementoBuscar);
+   printf("Este es el elemento buscado: %s , %s , %s , %s \n", elementoBuscado->palabraEspanhol, elementoBuscado->palabraOtro, elementoBuscado->definicionEspanhol, elementoBuscado->definicionOtro);
+   printf("\n");
+
+   /*AVL* primerElemento = crearElemento("Azul","Blue","Es el color ingresado número 1", "It is the color added number 1");
    AVL* segundoElemento = crearElemento("Rojo","Red","Es el color ingresado número 2", "It is the color added number 2");
    AVL* tercerElemento = crearElemento("Cafe","Brown","Es el color ingresado número 3", "It is the color added number 3");
    AVL* cuartoElemento = crearElemento("Amarillo","Yellow","Es el color ingresado número 4", "It is the color added number 4");
@@ -541,10 +515,10 @@ int main(int argc, char const *argv[]){
    mostrarArbol_Inorden(&raiz);
    mostrarArbol_Postorden(&raiz);
 
-   char elemento[51] = "Azul";
+   char elemento[51] = "Pink";
    AVL* elementoBuscado = buscarElemento(elemento, &raiz);
    printf("Palabra a buscar: %s\n", elemento);
    printf("Este es el elemento buscado: %s , %s\n", elementoBuscado->palabraEspanhol, elementoBuscado->palabraOtro);
-   printf("\n");
+   printf("\n");*/
    return 0;
 }
