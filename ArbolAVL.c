@@ -76,18 +76,21 @@ AVL* crearElemento(char palabraEspanhol[], char palabraOtro[], char definicionEs
 int compararPalabras(char P1[], char P2[]){
    int i;
    i = 0;
-   while(P1[i] != '\0' && P2[i] != '\0' ) {
-      if(P1[i] != P2[i]){
-         if(P1[i] < P2[i]){
-            return 1; //P1 va primero alfabéticamente (o mayor).
-         }
-         else{
-            return -1; //P2 va primero alfabéticamente (o mayor).
-         }
-      }
-      i++;
+   if(P1 != NULL && P2 != NULL){
+       while(P1[i] != '\0' && P2[i] != '\0' ) {
+           if(P1[i] != P2[i]){
+               if(P1[i] < P2[i]){
+                   return 1; //P1 va primero alfabéticamente (o mayor).
+               }
+               else{
+                   return -1; //P2 va primero alfabéticamente (o mayor).
+               }
+           }
+           i++;
+       }
+       return -2; //Error.
    }
-   return -2; //Error
+   return -3; //Error.
 }
 
 AVL* hijoDerechoPalabraEspanhol(AVL* elemento){
@@ -152,7 +155,6 @@ int alturaElementoEspanhol(AVL* elemento){
    if(elemento == NULL){
       return 0;
    }
-   printf("El elementoEspanhol es: %s\n", elemento->palabraEspanhol);
    if(hijoDerechoPalabraEspanhol(elemento) == NULL && hijoIzquierdoPalabraEspanhol(elemento) == NULL){
       return 1;
    }
@@ -169,7 +171,6 @@ int alturaElementoOtro(AVL* elemento){
    if(elemento == NULL){
       return 0;
    }
-   printf("El elementoOtro es: %s\n", elemento->palabraOtro);
    if(hijoDerechoPalabraOtro(elemento) == NULL && hijoIzquierdoPalabraOtro(elemento) == NULL){
       return 1;
    }
@@ -192,7 +193,6 @@ int diferenciaAlturasOtro(AVL* elemento){
 AVL* equilibrarRamaEspanhol(AVL* elementoEquilibrar){
    int diferenciaEspanhol;
    diferenciaEspanhol = diferenciaAlturasEspanhol(elementoEquilibrar);
-   printf("La diferenciaEspanhol es: %d\n", diferenciaEspanhol);
    if(diferenciaEspanhol == 2){
       if(diferenciaAlturasEspanhol(hijoIzquierdoPalabraEspanhol(elementoEquilibrar)) < 0){
          elementoEquilibrar->hijoIzquierdoPalabraEspanhol = rotarIzquierdaEspanhol(hijoIzquierdoPalabraEspanhol(elementoEquilibrar));
@@ -212,7 +212,6 @@ AVL* equilibrarRamaEspanhol(AVL* elementoEquilibrar){
 AVL* equilibrarRamaOtro(AVL* elementoEquilibrar){
    int diferenciaOtro;
    diferenciaOtro = diferenciaAlturasOtro(elementoEquilibrar);
-   printf("La diferenciaOtro es: %d\n", diferenciaOtro);
    if(diferenciaOtro == 2){
       if(diferenciaAlturasOtro(hijoIzquierdoPalabraOtro(elementoEquilibrar)) < 0){
          elementoEquilibrar->hijoIzquierdoPalabraOtro = rotarIzquierdaOtro(hijoIzquierdoPalabraOtro(elementoEquilibrar));
@@ -391,48 +390,55 @@ void mostrarArbol_Postorden(AVL** raizEspanhol, AVL** raizOtro) {
 int comparacionCompleta(char P1[], char P2[]){
    int i;
    i = 0;
-   while(P1[i] != '\0' && P2[i] != '\0' ) {
-      if(P1[i] != P2[i]){
-         if(P1[i] < P2[i]){
-            return 1; //P1 va primero alfabéticamente (o mayor).
-         }
-         if(P1[i] > P2[i]){
-            return -1; //P2 va primero alfabéticamente (o mayor).
-         }
-      }
-      i++;
-   }
-   return 0; //Las palabras son iguales.
+   if(P1 != NULL && P2 != NULL){
+        while(P1[i] != '\0' && P2[i] != '\0' ) {
+            if(P1[i] != P2[i]){
+                if(P1[i] < P2[i]){
+                    return 1; //P1 va primero alfabéticamente (o mayor).
+                }
+                if(P1[i] > P2[i]){
+                    return -1; //P2 va primero alfabéticamente (o mayor).
+                }
+            }
+            i++;
+        }
+        return 0; //Las palabras son iguales.
+    }
+    return -2;
 }
 
-/*AVL* buscarElemento(char palabraObjetivo[], AVL** raiz){ //Busca el primer elemento que coincida con el número objetivo.
-   if(comparacionCompleta((*raiz)->palabraEspanhol, palabraObjetivo) == 0){
-      return (*raiz);
+AVL* buscarElemento(char palabraObjetivo[], AVL** raizEspanhol, AVL** raizOtro){ //Busca el primer elemento que coincida con el número objetivo.
+   if(comparacionCompleta((*raizEspanhol)->palabraEspanhol, palabraObjetivo) == 0){
+      return (*raizEspanhol);
    }
-   if(comparacionCompleta((*raiz)->palabraOtro, palabraObjetivo) == 0){
-      return (*raiz);
+   if(comparacionCompleta((*raizOtro)->palabraOtro, palabraObjetivo) == 0){
+      return (*raizOtro);
    }
    else{
       //Buscar en palabras en español.
-      AVL* elementoActualEspanhol = *raiz;
-      while(comparacionCompleta(elementoActualEspanhol->palabraEspanhol, palabraObjetivo) != 0 && elementoActualEspanhol != NULL){
-         if(compararPalabras(palabraObjetivo, elementoActualEspanhol->palabraEspanhol) == 1){
-            elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
-         }
-         else{
-            elementoActualEspanhol = elementoActualEspanhol->hijoDerechoPalabraEspanhol;
-         }
+      AVL* elementoActualEspanhol = *raizEspanhol;
+      if(elementoActualEspanhol->palabraEspanhol != NULL){
+          while(comparacionCompleta(elementoActualEspanhol->palabraEspanhol, palabraObjetivo) != 0 && elementoActualEspanhol != NULL){
+              if(compararPalabras(palabraObjetivo, elementoActualEspanhol->palabraEspanhol) == 1){
+                  elementoActualEspanhol = elementoActualEspanhol->hijoIzquierdoPalabraEspanhol;
+              }
+              else{
+                  elementoActualEspanhol = elementoActualEspanhol->hijoDerechoPalabraEspanhol;
+              }
+          }
       }
       if(elementoActualEspanhol == NULL){
          //Buscar en palabras en inglés. Si se ha rotado es posible que no funcione.
-         AVL* elementoActualOtro = *raiz;
-         while(comparacionCompleta(elementoActualOtro->palabraOtro, palabraObjetivo) != 0 && elementoActualOtro != NULL){
-            if(compararPalabras(palabraObjetivo, elementoActualOtro->palabraOtro) == 1){
-               elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
-            }
-            else{
-               elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
-            }
+         AVL* elementoActualOtro = *raizOtro;
+         if(elementoActualOtro->palabraOtro != NULL){
+             while(comparacionCompleta(elementoActualOtro->palabraOtro, palabraObjetivo) != 0 && elementoActualOtro != NULL){
+                 if(compararPalabras(palabraObjetivo, elementoActualOtro->palabraOtro) == 1){
+                     elementoActualOtro = elementoActualOtro->hijoIzquierdoPalabraOtro;
+                 }
+                 else{
+                     elementoActualOtro = elementoActualOtro->hijoDerechoPalabraOtro;
+                 }
+             }
          }
          if(elementoActualOtro == NULL){
             printf("No se encuentra la palabra buscada\n");
@@ -445,29 +451,36 @@ int comparacionCompleta(char P1[], char P2[]){
          return elementoActualEspanhol;
       }
    }
-}*/
+}
 
 void leerArchivo(){
-
+    char palabraEspanhol[51], palabraOtro[51], definicionEspanhol[501];
+    FILE *archivoObjetivo = NULL;
+    archivoObjetivo = fopen("Diccionario.in","r");
+    while(!feof(archivoObjetivo)){
+          fscanf(archivoObjetivo,"%s%s",palabraEspanhol, palabraOtro);
+          fscanf(archivoObjetivo," %[^\n]", definicionEspanhol);
+          if(!feof(archivoObjetivo)){
+             AVL* elemento = crearElemento(palabraEspanhol, palabraOtro, definicionEspanhol);
+             agregarElemento(elemento, &raizEspanhol, &raizOtro);
+          }
+       }
+    fclose(archivoObjetivo);
+    return;
 }
 
 int main(int argc, char const *argv[]){
-   char palabraEspanhol[51], palabraOtro[51], definicionEspanhol[501];
-   FILE *archivoObjetivo = NULL;
-   archivoObjetivo = fopen("Diccionario.in","r");
-   while(!feof(archivoObjetivo)){
-         fscanf(archivoObjetivo,"%s%s",palabraEspanhol, palabraOtro);
-         fscanf(archivoObjetivo," %[^\n]", definicionEspanhol);
-         if(!feof(archivoObjetivo)){
-            AVL* elemento = crearElemento(palabraEspanhol, palabraOtro, definicionEspanhol);
-            agregarElemento(elemento, &raizEspanhol, &raizOtro);
-         }
-      }
-   fclose(archivoObjetivo);
-
-   mostrarArbol_Preorden(&raizEspanhol, &raizOtro);
-   mostrarArbol_Inorden(&raizEspanhol, &raizOtro);
-   mostrarArbol_Postorden(&raizEspanhol, &raizOtro);
-
+    printf("\n");
+    leerArchivo();
+    AVL* elementoBuscado1 = buscarElemento("Azul", &raizEspanhol, &raizOtro);
+    printf("Palabra buscada es: Azul\n");
+    printf("La palabra en español es: %s , en otro es: %s y su definición es: %s\n\n", elementoBuscado1->palabraEspanhol, elementoBuscado1->palabraOtro, elementoBuscado1->definicionEspanhol);
+    AVL* elementoBuscado2 = buscarElemento("Orange", &raizEspanhol, &raizOtro);
+    printf("Palabra buscada es: Orange\n");
+    printf("La palabra en español es: %s , en otro es: %s y su definición es: %s\n", elementoBuscado2->palabraEspanhol, elementoBuscado2->palabraOtro, elementoBuscado2->definicionEspanhol);
+    mostrarArbol_Preorden(&raizEspanhol, &raizOtro);
+    mostrarArbol_Inorden(&raizEspanhol, &raizOtro);
+    mostrarArbol_Postorden(&raizEspanhol, &raizOtro);
+    printf("\n");
    return 0;
 }
