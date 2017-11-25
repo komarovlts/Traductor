@@ -16,7 +16,6 @@ Se debe considerar que los nodos deben tener la siguiente información:
    •Palabra en español.
    •Palabra en otro idioma.
    •Significado de la palabra en español.
-   •Significado de la palabra en otro idioma.
    •Puntero español a nodo izquierdo.
    •Puntero español a nodo derecho.
    •Puntero otro idioma a nodo izquierdo.
@@ -60,6 +59,7 @@ AVL* raizEspanhol = NULL;
 AVL* raizOtro = NULL;
 int largoArbol = 0; //Largo del árbol.
 int contador = 0; //Contador usado en la función recorrerArbol_Inorden - roamTree_Inorden.
+char nombreUsuario[200];
 
 AVL* crearElemento(char palabraEspanhol[], char palabraOtro[], char definicionEspanhol[]){
    AVL* elemento = (AVL*)malloc(sizeof(AVL));
@@ -77,18 +77,18 @@ int compararPalabras(char P1[], char P2[]){
    int i;
    i = 0;
    if(P1 != NULL && P2 != NULL){
-       while(P1[i] != '\0' && P2[i] != '\0' ) {
-           if(P1[i] != P2[i]){
-               if(P1[i] < P2[i]){
-                   return 1; //P1 va primero alfabéticamente (o mayor).
-               }
-               else{
-                   return -1; //P2 va primero alfabéticamente (o mayor).
-               }
-           }
-           i++;
-       }
-       return -2; //Error.
+      while(P1[i] != '\0' && P2[i] != '\0' ) {
+         if(P1[i] != P2[i]){
+            if(P1[i] < P2[i]){
+               return 1; //P1 va primero alfabéticamente (o mayor).
+            }
+            else{
+               return -1; //P2 va primero alfabéticamente (o mayor).
+            }
+         }
+         i++;
+      }
+      return -2; //Error.
    }
    return -3; //Error.
 }
@@ -101,11 +101,10 @@ AVL* hijoDerechoPalabraEspanhol(AVL* elemento){
 }
 
 AVL* hijoDerechoPalabraOtro(AVL* elemento){
-  if(elemento == NULL){
-    return NULL;
-  }
-  return elemento->hijoDerechoPalabraOtro;
-
+   if(elemento == NULL){
+      return NULL;
+   }
+   return elemento->hijoDerechoPalabraOtro;
 }
 
 AVL* hijoIzquierdoPalabraEspanhol(AVL* elemento){
@@ -116,17 +115,17 @@ AVL* hijoIzquierdoPalabraEspanhol(AVL* elemento){
 }
 
 AVL* hijoIzquierdoPalabraOtro(AVL* elemento){
-  if(elemento == NULL){
-    return NULL;
-  }
-  return elemento->hijoIzquierdoPalabraOtro;
+   if(elemento == NULL){
+      return NULL;
+   }
+   return elemento->hijoIzquierdoPalabraOtro;
 }
 
 AVL* rotarDerechaEspanhol(AVL* elementoRotar){
-      AVL* nuevaRaiz = hijoIzquierdoPalabraEspanhol(elementoRotar);
-      elementoRotar->hijoIzquierdoPalabraEspanhol = hijoDerechoPalabraEspanhol(nuevaRaiz);
-      nuevaRaiz->hijoDerechoPalabraEspanhol = elementoRotar;
-      return nuevaRaiz;
+   AVL* nuevaRaiz = hijoIzquierdoPalabraEspanhol(elementoRotar);
+   elementoRotar->hijoIzquierdoPalabraEspanhol = hijoDerechoPalabraEspanhol(nuevaRaiz);
+   nuevaRaiz->hijoDerechoPalabraEspanhol = elementoRotar;
+   return nuevaRaiz;
 }
 
 AVL* rotarIzquierdaEspanhol(AVL* elementoRotar){
@@ -137,17 +136,17 @@ AVL* rotarIzquierdaEspanhol(AVL* elementoRotar){
 }
 
 AVL* rotarDerechaOtro(AVL* elementoRotar){
-      AVL* nuevaRaiz = hijoIzquierdoPalabraOtro(elementoRotar);
-      elementoRotar->hijoIzquierdoPalabraOtro = hijoDerechoPalabraOtro(nuevaRaiz);
-      nuevaRaiz->hijoDerechoPalabraOtro = elementoRotar;
-      return nuevaRaiz;
+   AVL* nuevaRaiz = hijoIzquierdoPalabraOtro(elementoRotar);
+   elementoRotar->hijoIzquierdoPalabraOtro = hijoDerechoPalabraOtro(nuevaRaiz);
+   nuevaRaiz->hijoDerechoPalabraOtro = elementoRotar;
+   return nuevaRaiz;
 }
 
 AVL* rotarIzquierdaOtro(AVL* elementoRotar){
-      AVL* nuevaRaiz = hijoDerechoPalabraOtro(elementoRotar);
-      elementoRotar->hijoDerechoPalabraOtro = hijoIzquierdoPalabraOtro(nuevaRaiz);
-      nuevaRaiz->hijoIzquierdoPalabraOtro = elementoRotar;
-      return nuevaRaiz;
+   AVL* nuevaRaiz = hijoDerechoPalabraOtro(elementoRotar);
+   elementoRotar->hijoDerechoPalabraOtro = hijoIzquierdoPalabraOtro(nuevaRaiz);
+   nuevaRaiz->hijoIzquierdoPalabraOtro = elementoRotar;
+   return nuevaRaiz;
 }
 
 int alturaElementoEspanhol(AVL* elemento){
@@ -469,18 +468,220 @@ void leerArchivo(){
     return;
 }
 
+void borrarArbol(AVL** raizEspanhol){ //Elimina cada rama del árbol de entrada.
+   if((*raizEspanhol)->hijoIzquierdoPalabraEspanhol != NULL){
+      borrarArbol(&((*raizEspanhol)->hijoIzquierdoPalabraEspanhol));
+   }
+   if((*raizEspanhol)->hijoDerechoPalabraEspanhol != NULL){
+      borrarArbol(&((*raizEspanhol)->hijoDerechoPalabraEspanhol));
+   }
+   free(*raizEspanhol);
+   return;
+}
+
+void anularArbol(AVL** raizEspanhol, AVL** raizOtro){ //Ejecuta la eliminación del árbol de entrada por ramas y finalmente elimina la raíz.
+   borrarArbol(&(*raizEspanhol));
+   (*raizEspanhol)->hijoDerechoPalabraEspanhol = NULL;
+   (*raizEspanhol)->hijoIzquierdoPalabraEspanhol = NULL;
+   (*raizOtro)->hijoDerechoPalabraOtro = NULL;
+   (*raizOtro)->hijoIzquierdoPalabraOtro = NULL;
+   if(*raizEspanhol != NULL){
+      *raizEspanhol = NULL;
+   }
+   if(*raizOtro != NULL){
+      *raizOtro = NULL;
+   }
+   return;
+}
+
+void imprimirArchivo_InordenEspanhol(AVL** raizEspanhol, FILE* escribirArchivo){
+   if(*raizEspanhol != NULL){
+      if((*raizEspanhol)->hijoIzquierdoPalabraEspanhol != NULL){
+         imprimirArchivo_InordenEspanhol(&((*raizEspanhol)->hijoIzquierdoPalabraEspanhol), escribirArchivo);
+      }
+      fprintf(escribirArchivo,"[ %s ]", (*raizEspanhol)->palabraEspanhol);
+      fprintf(escribirArchivo,"[ %s ]", (*raizEspanhol)->palabraOtro);
+      if((*raizEspanhol)->hijoDerechoPalabraEspanhol != NULL){
+         imprimirArchivo_InordenEspanhol(&((*raizEspanhol)->hijoDerechoPalabraEspanhol), escribirArchivo);
+      }
+   }
+}
+
+void imprimirArchivo_InordenOtro(AVL** raizOtro, FILE* escribirArchivo){
+   if(*raizOtro != NULL){
+      if((*raizOtro)->hijoIzquierdoPalabraOtro != NULL){
+         imprimirArchivo_InordenOtro(&((*raizOtro)->hijoIzquierdoPalabraOtro), escribirArchivo);
+      }
+      fprintf(escribirArchivo,"[ %s ]", (*raizOtro)->palabraOtro);
+      fprintf(escribirArchivo,"[ %s ]", (*raizOtro)->palabraEspanhol);
+      if((*raizOtro)->hijoDerechoPalabraOtro != NULL){
+         imprimirArchivo_InordenOtro(&((*raizOtro)->hijoDerechoPalabraOtro), escribirArchivo);
+      }
+   }
+}
+
+void generarArchivo(){
+   FILE* escribirArchivo;
+   int opcion;
+   do{
+      printf("\n*********************************************************************");
+      printf("\n                      Bienvenido %s                   ", nombreUsuario);
+      printf("\n  1.  Generar archivo de texto ordenado alfabeticamente en Espanhol  ");
+      printf("\n  2.  Generar archivo de texto ordenado alfabeticamente en Otro      ");
+      printf("\n  3.  Volver                                                         ");
+      printf("\n*********************************************************************");
+      printf("\n\nElija opcion: ");
+      scanf("%d", &opcion);
+      fflush(stdin);
+      while (getchar() != '\n');
+      switch (opcion){
+         case 1:
+               escribirArchivo = fopen("Palabras.out","w");
+               fprintf(escribirArchivo, "Árbol en orden alfabético por Español:\n");
+               imprimirArchivo_InordenEspanhol(&raizEspanhol, escribirArchivo);
+               fclose(escribirArchivo);
+               printf("El archivo ha sido generado exitosamente.\n");
+         break;
+         case 2:
+               escribirArchivo = fopen("Palabras.out","w");
+               fprintf(escribirArchivo, "Árbol en orden alfabético por Otro:\n");
+               imprimirArchivo_InordenOtro(&raizOtro, escribirArchivo);
+               fclose(escribirArchivo);
+               printf("El archivo ha sido generado exitosamente.\n");
+         break;
+         case 3:
+         break;
+      }
+   }while(opcion != 1 && opcion != 2 && opcion != 3);
+}
+
+void buscarPalabras(){
+   int opcion;
+   char palabra[51];
+   char respuestaUsuario;
+   do{
+      printf("\n***********************************************");
+      printf("\n           Busqueda de Palabras                ");
+      printf("\n      1.  Buscar palabras en Espanhol          ");
+      printf("\n      2.  Buscar palabras en Otro              ");
+      printf("\n      3.  Volver                               ");
+      printf("\n***********************************************");
+      printf("\n\nElija opcion: ");
+      scanf("%d", &opcion);
+      fflush(stdin);
+      while (getchar() != '\n');
+      switch (opcion){
+         case 1:
+               printf("\nEscriba la palabra a buscar: ");
+               scanf("%s", palabra);
+               AVL* palabraBuscadaEspanhol = buscarElemento(palabra, &raizEspanhol, &raizOtro);
+               printf("\nLa palabra en Espanhol es: %s , en Otro es: %s \n", palabraBuscadaEspanhol->palabraEspanhol, palabraBuscadaEspanhol->palabraOtro);
+               printf("\nMostrar definicion\n");
+               printf("     (S/n)\n");
+               scanf("%c", &respuestaUsuario);
+               respuestaUsuario = getchar();
+               while (getchar() != '\n');
+               if(respuestaUsuario == 'S' || respuestaUsuario == 's'){
+         			printf("\nLa definicion de la palabra es: %s \n\n", palabraBuscadaEspanhol->definicionEspanhol);
+                  break;
+         		}
+               if(respuestaUsuario == 'N' || respuestaUsuario == 'n'){
+                  break;
+         		}
+         break;
+         case 2:
+               printf("\nEscriba la palabra a buscar: ");
+               scanf("%s", palabra);
+               AVL* palabraBuscadaOtro = buscarElemento(palabra, &raizEspanhol, &raizOtro);
+               printf("La palabra en Otro es: %s , en Espanhol es: %s \n", palabraBuscadaOtro->palabraOtro, palabraBuscadaOtro->palabraEspanhol);
+               printf("Mostrar definicion\n");
+               printf("     (S/n)\n");
+               scanf("%c", &respuestaUsuario);
+               respuestaUsuario = getchar();
+               while (getchar() != '\n');
+               if(respuestaUsuario == 'S' || respuestaUsuario == 's'){
+                  printf("\nLa definicion de la palabra es: %s \n\n", palabraBuscadaOtro->definicionEspanhol);
+                  break;
+               }
+               if(respuestaUsuario == 'N' || respuestaUsuario == 'n'){
+                  break;
+               }
+         break;
+         case 3:
+         break;
+      }
+   }while (opcion != 1 && opcion != 2 && opcion != 3);
+}
+
+void actualizarDatos(){
+   anularArbol(&raizEspanhol, &raizOtro);
+   leerArchivo();
+   printf("\nDatos actualizados exitosamente\n\n");
+}
+
+void menuPrincipal(){
+   int opcion;
+   do{
+      printf("\n***********************************************");
+      printf("\n            Bienvenido %s       ", nombreUsuario);
+      printf("\n      1.  Buscar palabras                      ");
+      printf("\n      2.  Generar archivo de texto             ");
+      printf("\n      3.  Actualizar datos                     ");
+      printf("\n      4.  Salir                                ");
+      printf("\n*********************************************");
+      printf("\n\nElija opcion: ");
+      scanf("%d", &opcion);
+      fflush(stdin);
+      while (getchar() != '\n');
+      switch (opcion){
+         case 1:
+               buscarPalabras();
+         break;
+         case 2:
+               generarArchivo();
+         break;
+         case 3:
+               actualizarDatos();
+         break;
+         case 4:
+               anularArbol(&raizEspanhol, &raizOtro);
+               printf("\nHasta Pronto\n");
+         break;
+      }
+   }while(opcion != 4);
+}
+
+void* ingresar(){
+   printf("\nIngrese su nombre: ");
+   scanf(" %s", nombreUsuario);
+}
+
+void menuPrimario(){
+   int opcion;
+   do{
+     printf("\n*******************************************");
+     printf("\n         Bienvenido al Traductor           ");
+     printf("\n           1.  Ingresar                ");
+     printf("\n           2.  Salir                   ");
+     printf("\n*******************************************");
+     printf("\n\nElija opcion: ");
+     scanf("%d",&opcion);
+     fflush(stdin);
+     while (getchar() != '\n');
+     switch (opcion){
+        case 1: printf("\n    Ingresar");
+        ingresar();
+        menuPrincipal();
+        break;
+        case 2: printf("SALIR\n");
+        break;
+     }
+  }while (opcion != 1 && opcion != 2);
+  return;
+}
+
 int main(int argc, char const *argv[]){
-    printf("\n");
-    leerArchivo();
-    AVL* elementoBuscado1 = buscarElemento("Azul", &raizEspanhol, &raizOtro);
-    printf("Palabra buscada es: Azul\n");
-    printf("La palabra en español es: %s , en otro es: %s y su definición es: %s\n\n", elementoBuscado1->palabraEspanhol, elementoBuscado1->palabraOtro, elementoBuscado1->definicionEspanhol);
-    AVL* elementoBuscado2 = buscarElemento("Orange", &raizEspanhol, &raizOtro);
-    printf("Palabra buscada es: Orange\n");
-    printf("La palabra en español es: %s , en otro es: %s y su definición es: %s\n", elementoBuscado2->palabraEspanhol, elementoBuscado2->palabraOtro, elementoBuscado2->definicionEspanhol);
-    mostrarArbol_Preorden(&raizEspanhol, &raizOtro);
-    mostrarArbol_Inorden(&raizEspanhol, &raizOtro);
-    mostrarArbol_Postorden(&raizEspanhol, &raizOtro);
-    printf("\n");
+   leerArchivo();
+   menuPrimario();
    return 0;
 }
